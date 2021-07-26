@@ -2,7 +2,7 @@
   "name": "employee_tracker",
   "version": "1.0.0",
   "description": "A content management system created using command line to manage a company's employee database. (tech used are: Node.js, inquirer, MySQL)",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "test": "run test"
   },
