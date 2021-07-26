@@ -1,0 +1,28 @@
+{
+  "name": "employee_tracker",
+  "version": "1.0.0",
+  "description": "A content management system created using command line to manage a company's employee database. (tech used are: Node.js, inquirer, MySQL)",
+  "main": "server.js",
+  "scripts": {
+    "test": "run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/julioPlaceres/Employee_Tracker.git"
+  },
+  "keywords": [
+    "node.js",
+    "inquirer",
+    "mysql"
+  ],
+  "author": "julioPlaceres",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/julioPlaceres/Employee_Tracker/issues"
+  },
+  "homepage": "https://github.com/julioPlaceres/Employee_Tracker#readme",
+  "dependencies": {
+    "inquirer": "^8.1.2",
+    "mysql2": "^2.2.5"
+  }
+}
