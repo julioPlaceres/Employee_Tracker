@@ -35,11 +35,11 @@ class DatabaseQueries {
     }
 
     chooseManager(){
-        return this.conn.query("SELECT first_name, last_name FROM employee WHERE manager_id IS NULL");
+        return this.conn.query("SELECT id, first_name FROM employee WHERE manager_id IS NULL");
     }
 
     chooseEmployee(){
-        return this.conn.query("SELECT first_name FROM employee");
+        return this.conn.query("SELECT id, first_name FROM employee");
     }
 }
 

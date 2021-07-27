@@ -1,11 +1,12 @@
 // Dependencies
 const inquirer = require("inquirer");
+const { promise } = require("./db/connection");
 const db = require("./db/queries");
 
 // variables
-roleArray = [];
-managerArray = [];
-employeeArray = [];
+var roleArray = [];
+var managerArray = [];
+var employeeArray = [];
 
 mainMenu();
 
@@ -36,7 +37,7 @@ function mainMenu() {
             case "Add Employee":
                 addEmployee();
                 break;
-            
+
             case "Update Employee Role":
                 updateEmployeeRole();
                 break;
@@ -90,15 +91,17 @@ function addEmployee() {
             choices: getManager()
         }
     ]).then(function (response) {
+        // Increase index by 1 since array is 0 index based
         var roleId = roleArray.indexOf(response.role) + 1;
-        var managerId = managerArray.indexOf(response.manager) + 1;
-        db.addEmployee(response.firstname, response.lastname, roleId, managerId);
-        db.displayEmployees();
+        var managerId = response.manager;
+
+        db.addEmployee(response.firstname, response.lastname, managerId, roleId);
+        mainMenu();
     })
 }
 
 // Returns an Array of Roles that are used by the inquirer as choices
-function getRoles(){
+function getRoles() {
     selectRole();
     return roleArray;
 }
@@ -112,7 +115,7 @@ async function selectRole() {
 }
 
 // Returns a array of managers names to be used by the inquirer as choices
-function getManager(){
+function getManager() {
     selectManager();
     return managerArray;
 }
@@ -120,9 +123,13 @@ function getManager(){
 // Query the db to get the managers names and add them to an array
 async function selectManager() {
     let managerRole = await db.chooseManager();
+    console.log("Manager Role: ", managerRole);
     for (var i = 0; i < managerRole.length; i++) {
-        managerArray.push(managerRole[i].first_name);
+        let managerObj = { name: managerRole[i].first_name, value: managerRole[i].id }
+        console.log("Manager object: ", managerObj);
+        managerArray.push(managerObj);
     }
+    console.log("Manager Array of objects: ", managerArray);
 }
 
 // NOT WORKING
@@ -140,16 +147,28 @@ function updateEmployeeRole() {
     })
 }
 
-function getEmployeeList(){
+function getEmployeeList() {
     selectEmployees();
     return employeeArray;
 }
 
-async function selectEmployees(){
-    let employeeData = await db.chooseEmployee();
-    for (var i = 0; i < employeeData.length; i++){
-        employeeArray.push(employeeData[i].first_name);
-    }
+async function selectEmployees() {
+    // return new Promise(async (resolve, reject) => {
+    //     let employeeData = await db.chooseEmployee();
+
+    //     for (var i = 0; i < employeeData.length; i++) {
+    //         employeeArray.push(employeeData[i].first_name);
+    //     }
+    //     resolve(employeeData);
+    // });
+
+    
+    // let employeeData = await db.chooseEmployee();
+    // for (var i = 0; i < employeeData.length; i++){
+    //     let employeeObj = { name: managerRole[i].first_name, value: managerRole[i].id }
+    //     console.log("Manager object: ", managerObj);
+    //     managerArray.push(managerObj);
+    // }
 }
 
 // See All Roles 
@@ -160,13 +179,13 @@ async function viewAllRoles() {
     mainMenu();
 }
 
-async function viewAllDepartments(){
+async function viewAllDepartments() {
     let dept = await db.displaydepartments();
     console.table(dept);
     mainMenu();
 }
 
-function addDepartments(){
+function addDepartments() {
     inquirer.prompt([
         {
             name: "department",
