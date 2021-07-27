@@ -9,6 +9,10 @@ class DatabaseQueries {
         return this.conn.query("SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name, CONCAT(e.first_name, ' ' ,e.last_name) AS Manager FROM employee INNER JOIN role on role.id = employee.role_id INNER JOIN department on department.id = role.department_id left join employee e on employee.manager_id = e.id;");
     }
 
+    displaydepartments(){
+        return this.conn.query("SELECT id, name FROM department")
+    }
+
     addEmployee(firstName, lastName, managerId, roleId){
         return this.conn.query("INSERT INTO employee SET ?",
         {
@@ -19,12 +23,23 @@ class DatabaseQueries {
         });
     }
 
+    addDepartment(deptName){
+        return this.conn.query("INSERT INTO department SET ?",
+        {
+            name: deptName
+        });
+    }
+
     chooseRole(){
         return this.conn.query("SELECT * FROM role");
     }
 
     chooseManager(){
         return this.conn.query("SELECT first_name, last_name FROM employee WHERE manager_id IS NULL");
+    }
+
+    chooseEmployee(){
+        return this.conn.query("SELECT first_name FROM employee");
     }
 }
 

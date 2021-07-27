@@ -5,6 +5,7 @@ const db = require("./db/queries");
 // variables
 roleArray = [];
 managerArray = [];
+employeeArray = [];
 
 mainMenu();
 
@@ -35,19 +36,35 @@ function mainMenu() {
             case "Add Employee":
                 addEmployee();
                 break;
+            
+            case "Update Employee Role":
+                updateEmployeeRole();
+                break;
+
+            case "View All Roles":
+                viewAllRoles();
+                break;
+
+            case "View All departments":
+                viewAllDepartments();
+                break;
+
+            case "Add departments":
+                addDepartments();
+                break;
         }
     })
 }
 
-// See All Employees
+// See All Employees 
 async function showEmployees() {
     let employees = await db.displayEmployees();
     // Add spaces before and after
     console.table(employees);
-    startPrompt();
+    mainMenu();
 }
 
-// Adds Employees to the database
+// Adds Employees to the database 
 function addEmployee() {
     inquirer.prompt([
         {
@@ -75,13 +92,6 @@ function addEmployee() {
     ]).then(function (response) {
         var roleId = roleArray.indexOf(response.role) + 1;
         var managerId = managerArray.indexOf(response.manager) + 1;
-        console.log(managerArray);
-        console.log(
-            "Fname: ", response.firstname,
-            " LName: ", response.lastname,
-            " roleID: ", roleId,
-            " ManagerID: ", managerId
-        );
         db.addEmployee(response.firstname, response.lastname, roleId, managerId);
         db.displayEmployees();
     })
@@ -113,4 +123,59 @@ async function selectManager() {
     for (var i = 0; i < managerRole.length; i++) {
         managerArray.push(managerRole[i].first_name);
     }
+}
+
+// NOT WORKING
+function updateEmployeeRole() {
+    inquirer.prompt([
+        {
+            name: "employees",
+            type: "list",
+            message: "Whats their employee name?",
+            choices: getEmployeeList()
+        }
+    ]).then(function (response) {
+
+        db.displayEmployees();
+    })
+}
+
+function getEmployeeList(){
+    selectEmployees();
+    return employeeArray;
+}
+
+async function selectEmployees(){
+    let employeeData = await db.chooseEmployee();
+    for (var i = 0; i < employeeData.length; i++){
+        employeeArray.push(employeeData[i].first_name);
+    }
+}
+
+// See All Roles 
+async function viewAllRoles() {
+    let roles = await db.chooseRole();
+    // Add spaces before and after
+    console.table(roles);
+    mainMenu();
+}
+
+async function viewAllDepartments(){
+    let dept = await db.displaydepartments();
+    console.table(dept);
+    mainMenu();
+}
+
+function addDepartments(){
+    inquirer.prompt([
+        {
+            name: "department",
+            type: "input",
+            message: "What is the department name?"
+        }
+    ]).then(function (response) {
+        db.addDepartment(response.department);
+        db.displaydepartments();
+        mainMenu();
+    })
 }
