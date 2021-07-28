@@ -50,6 +50,12 @@ class DatabaseQueries {
     chooseEmployee(){
         return this.conn.query("SELECT id, first_name FROM employee");
     }
+
+    updateRole(roleId, empId){
+        return this.conn.query("UPDATE employee SET role_id = ? WHERE id = ?", {
+            roleId, empId
+        });
+    }
 }
 
 module.exports = new DatabaseQueries(conn);

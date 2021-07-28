@@ -140,28 +140,45 @@ async function selectManager() {
 }
 
 // Will update Employee Role
-function updateEmployeeRole() {
+async function updateEmployeeRole() {
+    var employeeId;
+    var roleId;
+
+    await getEmployeeList();
+
     inquirer.prompt([
         {
             name: "employees",
             type: "list",
             message: "Whats their employee name?",
-            choices: getEmployeeList()
+            choices: employeeArray
         }
-    ]).then(function (response) {
-        db.displayEmployees();
-        mainMenu();
+    ]).then( async function (response) {
+        
+        // Gets the ID from the response
+        employeeId = response;
+
+        const rol = await getRoles();
+
+        inquirer.prompt([
+            {
+                name: "role",
+                type: "list",
+                message: "Which role would like to assign?",
+                choices: rol
+            }
+        ]).then(async function (response){
+            roleId = response;
+            await db.updateRole(roleId, employeeId);
+        }).then(function (response) {
+            db.displayEmployees();
+            mainMenu();
+        })
     })
 }
 
-function getEmployeeList() {
-    selectEmployees();
-    console.log(employeeArray);
-    return employeeArray;
-}
-
-async function selectEmployees() {
-    let employeeData = await db.chooseEmployee();
+async function getEmployeeList() {
+    const employeeData = await db.chooseEmployee();
 
     for (var i = 0; i < employeeData.length; i++) {
         let employeeObj = { name: employeeData[i].first_name, value: employeeData[i].id }
