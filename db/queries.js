@@ -30,6 +30,15 @@ class DatabaseQueries {
         });
     }
 
+    addRole(roleName, salaryQty, deptId){
+        return this.conn.query("INSERT INTO role SET ?",
+        {
+            title: roleName,
+            salary: salaryQty,
+            department_id: deptId
+        });
+    }
+
     chooseRole(){
         return this.conn.query("SELECT * FROM role");
     }
